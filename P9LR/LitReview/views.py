@@ -3,7 +3,7 @@ from django.http import HttpResponse
 
 
 def home(request):
-    return render(request, 'LitReview/dashboard.html')
+    return render(request, 'LitReview/dashboard.html', {'dude': 1})
 
 
 def pieces(request):
