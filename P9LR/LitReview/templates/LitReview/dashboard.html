@@ -2,7 +2,17 @@
 
 {% block content %}
 
-<p>Dashboard</p>
-<p>{{dude}}</p>
+<div class="grid-container">
+    <div class="grid-item">
+        <p>Inscrivez-vous maintenant</p>
+        <a href="{% url 'signup' %}">S'inscrire</a>
+    </div>
 
+    <div class="grid-item">
+        <p>Connectez-vous</p>
+        <input type="text" value="Nom d'utilisateur" id="username" name="username" required size="40">
+        <p><input type="text" value="Mot de passe" id="password" name="password" size="40" required></p>
+        <button id="login">Se connecter</button>
+    </div>
+</div>
 {% endblock %}

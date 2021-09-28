@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 
 
 def home(request):
-    return render(request, 'LitReview/dashboard.html', {'dude': 1})
+    return render(request, 'LitReview/dashboard.html')
 
 
 def pieces(request):
@@ -21,7 +21,6 @@ def profile(request):
 
 def signup(request):
     if request.method == 'POST':
-        print(request.POST)
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
