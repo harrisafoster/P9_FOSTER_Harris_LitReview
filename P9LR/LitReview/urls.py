@@ -3,8 +3,8 @@ from . import views
 from django.conf.urls import url
 
 urlpatterns = [
-    path('', views.home),
+    path('', views.home, name='home'),
     path('profile/', views.profile),
     path('pieces/', views.pieces),
-    url(r'^signup/$', views.signup, name='signup'), '''template does not exist?'''
+    url(r'^signup/$', views.signup, name='signup'),
 ]

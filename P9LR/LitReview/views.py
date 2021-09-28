@@ -14,12 +14,14 @@ def pieces(request):
 
 
 def profile(request):
+    ## 'if user is authenticated, grab user name and info automatically'
     return render(request, 'LitReview/profile.html')
 # Create your views here.
 
 
 def signup(request):
     if request.method == 'POST':
+        print(request.POST)
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
@@ -30,4 +32,4 @@ def signup(request):
             return redirect('home')
     else:
         form = UserCreationForm()
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'LitReview/signup.html', {'form': form})
