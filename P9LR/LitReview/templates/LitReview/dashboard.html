@@ -1,18 +1,18 @@
 {% extends 'LitReview/main.html' %}
 
 {% block content %}
-
-<div class="grid-container">
-    <div class="grid-item">
-        <p>Inscrivez-vous maintenant</p>
-        <a href="{% url 'signup' %}">S'inscrire</a>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <p>Inscrivez-vous maintenant</p>
+                <a href="{% url 'signup' %}" class="button">S'inscrire</a>
+            </div>
+            <div class="col">
+                <p>Connectez-vous</p>
+                <input type="text" value="Nom d'utilisateur" id="username" name="username" required size="40">
+                <p><input type="text" value="Mot de passe" id="password" name="password" size="40" required></p>
+                <button id="login" class="button">Se connecter</button>
+            </div>
+        </div>
     </div>
-
-    <div class="grid-item">
-        <p>Connectez-vous</p>
-        <input type="text" value="Nom d'utilisateur" id="username" name="username" required size="40">
-        <p><input type="text" value="Mot de passe" id="password" name="password" size="40" required></p>
-        <button id="login">Se connecter</button>
-    </div>
-</div>
 {% endblock %}

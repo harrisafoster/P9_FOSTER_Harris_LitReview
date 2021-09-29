@@ -9,8 +9,8 @@ def home(request):
     return render(request, 'LitReview/dashboard.html')
 
 
-def pieces(request):
-    return render(request, 'LitReview/pieces.html')
+def flux(request):
+    return render(request, 'LitReview/flux.html')
 
 
 def profile(request):

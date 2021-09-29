@@ -1,6 +1,9 @@
 {% extends 'LitReview/main.html' %}
 
 {% block content %}
+<h1>LitReview</h1>
+<hr>
+<div class="container">
   <h2>Sign up</h2>
   <form method="post">
     {% csrf_token %}
@@ -9,14 +12,14 @@
         {{ field.label_tag }}<br>
         {{ field }}
         {% if field.help_text %}
-          <small style="color: grey">{{ field.help_text }}</small>
         {% endif %}
         {% for error in field.errors %}
           <p style="color: red">{{ error }}</p>
         {% endfor %}
       </p>
     {% endfor %}
-    <button type="submit">Sign up</button>
-    <a href="{% url 'home' %}">Retour</a>
+    <button type="submit" class="button">S'inscrire</button>
+    <a href="{% url 'home' %}" class="button">Retour</a>
   </form>
+</div>
 {% endblock %}
