@@ -9,9 +9,12 @@
             </div>
             <div class="col">
                 <p>Connectez-vous</p>
-                <input type="text" value="Nom d'utilisateur" id="username" name="username" required size="40">
-                <p><input type="text" value="Mot de passe" id="password" name="password" size="40" required></p>
-                <button id="login" class="button">Se connecter</button>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="text" value="Nom d'utilisateur" id="username" name="username" required size="40">
+                    <p><input type="text" value="Mot de passe" id="password" name="password" size="40" required></p>
+                    <button type="submit" class="button">Se connecter</button>
+                </form>
             </div>
         </div>
     </div>

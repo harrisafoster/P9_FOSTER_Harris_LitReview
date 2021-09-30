@@ -1,34 +1,54 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
+from django.contrib.auth import logout as django_logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
 
-def home(request):
-    return render(request, 'LitReview/dashboard.html')
+def login_page(request):
+    if request.user.is_authenticated:
+        return redirect('flux')
+    else:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                return redirect('flux')
+            else:
+                messages.info(request, 'Username OR password is incorrect')
+
+        context = {}
+        return render(request, 'registration/login.html', context)
+
+
+def signup(request):
+    if request.user.is_authenticated:
+        return redirect('flux')
+    else:
+        if request.method == 'POST':
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data.get('username')
+                raw_password = form.cleaned_data.get('password1')
+                user = authenticate(username=username, password=raw_password)
+                login(request, user)
+                return redirect('flux')
+        else:
+            form = UserCreationForm()
+        return render(request, 'registration/signup.html', {'form': form})
+
+
+def logout(request):
+    django_logout(request)
+    return redirect('login_page')
 
 
 def flux(request):
     return render(request, 'LitReview/flux.html')
-
-
-def profile(request):
-    ## 'if user is authenticated, grab user name and info automatically'
-    return render(request, 'LitReview/profile.html')
-# Create your views here.
-
-
-def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'LitReview/signup.html', {'form': form})
