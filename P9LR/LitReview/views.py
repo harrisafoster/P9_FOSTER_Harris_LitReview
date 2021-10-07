@@ -5,6 +5,7 @@ from django.contrib.auth import logout as django_logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from .forms import TicketForm, ReviewForm
 
 
 def login_page(request):
@@ -52,3 +53,15 @@ def logout(request):
 
 def flux(request):
     return render(request, 'LitReview/flux.html')
+
+
+def create_ticket(request):
+    form = TicketForm()
+    if request.method == "POST":
+        form = TicketForm(request.POST, request.FILES)
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.user = request.user
+            ticket.save()
+    context = {'form': form}
+    return render(request, 'LitReview/create_ticket.html', context)
