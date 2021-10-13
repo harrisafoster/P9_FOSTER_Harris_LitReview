@@ -6,16 +6,16 @@
     <div class="row">
         <div class="col">
             <a href="{% url 'create_ticket' %}" class="button">Ask for a review</a>
-            <button type="button" class="btn btn-secondary btn-lg">Créer une critique</button>
+            <a href="" class="button">Create a review</a>
             <div class="critique">
               <div class="critique-body">
-                  <h6 class="post-nature">Vous avez publié une critique</h6>
-                  <h5 class="rating">Véritable révolutionnaire &#9733;&#9733;&#9733;&#9733;&#9733;</h5>
-                  <p class="critique-text">Une excellente lecture et je vous recommande vivement !</p>
-                    <div class="nested-body">
-                        <h6 class="ticket-name">Ticket - jean8597</h6>
-                        <h6 class="title-of-piece">The Origin of Species - Charles Darwin</h6>
-                    </div>
+                  {% for review in list_reviews %}
+                      <p>{{review.title}}</p>
+                      <p>{{review.time_created}}</p>
+                      <p>{{review.user.username}}</p>
+                      <p>{{review.description}}</p>
+                      <img src="{{review.image.url}}">
+                  {% endfor %}
               </div>
             </div>
         </div>

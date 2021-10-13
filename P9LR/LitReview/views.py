@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import TicketForm, ReviewForm
+from .models import Ticket, Review
 
 
 def login_page(request):
@@ -52,7 +53,9 @@ def logout(request):
 
 
 def flux(request):
-    return render(request, 'LitReview/flux.html')
+    list_reviews = Ticket.objects.all()
+    context = {'list_reviews': list_reviews}
+    return render(request, 'LitReview/flux.html', context)
 
 
 def create_ticket(request):
@@ -63,5 +66,6 @@ def create_ticket(request):
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
+            return redirect('flux')
     context = {'form': form}
     return render(request, 'LitReview/create_ticket.html', context)
