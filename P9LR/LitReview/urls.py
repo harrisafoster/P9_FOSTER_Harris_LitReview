@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
-from .views import PostListView, PersonalPostListView
+from .views import PostListView, PersonalPostListView, UpdatePostView
+
 
 
 urlpatterns = [
@@ -13,6 +14,6 @@ urlpatterns = [
     path('create_review/', views.create_review, name='create_review'),
     path('subscriptions/', views.subscriptions, name='subscriptions'),
     path('posts/', PersonalPostListView.as_view(), name='posts'),
-    path('edit_ticket/', views.edit_ticket, name='edit_ticket'),
     path('edit_review/', views.edit_review, name='edit_review'),
+    path('ticket/edit/<int:pk>/', UpdatePostView.as_view(), name='edit_ticket'),
 ]

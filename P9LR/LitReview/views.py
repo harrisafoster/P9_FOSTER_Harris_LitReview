@@ -5,8 +5,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import TicketForm, ReviewForm
 from .models import Ticket, Review
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
 import operator
+from django.urls import reverse
 
 
 def login_page(request):
@@ -69,11 +70,13 @@ class PersonalPostListView(ListView):
         return sorted(personal_posts, key=operator.attrgetter('time_created'), reverse=True)
 
 
-def edit_ticket(request):
-    if not request.user.is_authenticated:
-        return redirect('login_page')
-    context = {}
-    return render(request, 'LitReview/edit_ticket.html', context)
+class UpdatePostView(UpdateView):
+    model = Ticket
+    template_name = 'LitReview/edit_ticket.html'
+    fields = ['title', 'description', 'image']
+
+    def get_success_url(self):
+        return reverse('posts')
 
 
 def edit_review(request):

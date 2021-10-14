@@ -4,8 +4,13 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      <h2>Edit request for review</h2>
-
+      <h2>Edit a request for a review</h2>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.media}}
+        {{form.as_p}}
+        <input type="submit">
+      </form>
     </div>
   </div>
 </div>
