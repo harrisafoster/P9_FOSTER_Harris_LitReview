@@ -1,5 +1,3 @@
-from django.shortcuts import render
-from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout as django_logout
 from django.contrib.auth.forms import UserCreationForm
@@ -7,6 +5,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import TicketForm, ReviewForm
 from .models import Ticket, Review
+from django.views.generic import ListView
+import operator
 
 
 def login_page(request):
@@ -52,12 +52,35 @@ def logout(request):
     return redirect('login_page')
 
 
-def flux(request):
+class PostListView(ListView):
+    model = Ticket
+    template_name = 'LitReview/flux.html'
+    context_object_name = 'list_reviews'
+    ordering = ['-time_created']
+
+
+class PersonalPostListView(ListView):
+    model = Ticket
+    template_name = 'LitReview/posts.html'
+    context_object_name = 'list_reviews'
+
+    def get_queryset(self):
+        personal_posts = Ticket.objects.filter(user=self.request.user)
+        return sorted(personal_posts, key=operator.attrgetter('time_created'), reverse=True)
+
+
+def edit_ticket(request):
     if not request.user.is_authenticated:
         return redirect('login_page')
-    list_reviews = Ticket.objects.all()
-    context = {'list_reviews': list_reviews}
-    return render(request, 'LitReview/flux.html', context)
+    context = {}
+    return render(request, 'LitReview/edit_ticket.html', context)
+
+
+def edit_review(request):
+    if not request.user.is_authenticated:
+        return redirect('login_page')
+    context = {}
+    return render(request, 'LitReview/edit_review.html', context)
 
 
 def create_ticket(request):
@@ -78,7 +101,12 @@ def create_ticket(request):
 def create_response(request):
     if not request.user.is_authenticated:
         return redirect('login_page')
-    context = {}
+    form = ReviewForm()
+    if request.method == "POST":
+        form = ReviewForm(request.POST, request.FILES)
+        if form.is_valid():
+            print(form.cleaned_data)
+    context = {'form': form}
     return render(request, 'LitReview/create_response.html', context)
 
 
@@ -94,29 +122,3 @@ def subscriptions(request):
         return redirect('login_page')
     context = {}
     return render(request, 'LitReview/subscriptions.html', context)
-
-
-def posts(request):
-    if not request.user.is_authenticated:
-        return redirect('login_page')
-    list_reviews = Ticket.objects.all()
-    filtered_list = []
-    for post in list_reviews:
-        if post.user == request.user:
-            filtered_list.append(post)
-    context = {'list_reviews': filtered_list}
-    return render(request, 'LitReview/posts.html', context)
-
-
-def edit_ticket(request):
-    if not request.user.is_authenticated:
-        return redirect('login_page')
-    context = {}
-    return render(request, 'LitReview/edit_ticket.html', context)
-
-
-def edit_review(request):
-    if not request.user.is_authenticated:
-        return redirect('login_page')
-    context = {}
-    return render(request, 'LitReview/edit_review.html', context)
