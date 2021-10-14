@@ -1,0 +1,27 @@
+{% extends 'LitReview/main.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="critique">
+                {% for review in list_reviews %}
+                  <div class="critique-body">
+                      <p>{{review.user.username}} has asked for a review</p>
+                      <p class="time_created">{{review.time_created}}</p>
+                      <p>{{review.title}}</p>
+                      <p>{{review.description}}</p>
+                      <img src="{{review.image.url}}">
+                      <div>
+                        <a href="{% url 'edit_ticket' %}" class="button">Edit</a>
+                        <a href="{% url 'edit_review' %}" class="button">Delete</a>
+                      </div>
+                  </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

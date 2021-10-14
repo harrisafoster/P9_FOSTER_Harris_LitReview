@@ -6,17 +6,20 @@
     <div class="row">
         <div class="col">
             <a href="{% url 'create_ticket' %}" class="button">Ask for a review</a>
-            <a href="" class="button">Create a review</a>
+            <a href="{% url 'create_review' %}" class="button">Create a review</a>
             <div class="critique">
-              <div class="critique-body">
-                  {% for review in list_reviews %}
-                      <p>{{review.title}}</p>
-                      <p>{{review.time_created}}</p>
-                      <p>{{review.user.username}}</p>
-                      <p>{{review.description}}</p>
-                      <img src="{{review.image.url}}">
-                  {% endfor %}
-              </div>
+                {% for review in list_reviews %}
+                <div class="critique-body">
+                    <p>{{review.user.username}} has asked for a review</p>
+                    <p class="time_created">{{review.time_created}}</p>
+                    <p>{{review.title}}</p>
+                    <p>{{review.description}}</p>
+                    <img src="{{review.image.url}}">
+                    <div>
+                        <a href="{% url 'create_response' %}" class="button">Create a review</a>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

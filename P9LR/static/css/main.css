@@ -24,9 +24,24 @@ h1 {
     border: 1px solid black;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 10px;
     width: 50%;
+    text-align: left;
 }
 
-.nested-body {
-    border: 1px solid black;
+.critique-body img {
+    width: 50%;
+    height: auto;
+}
+
+.critique-body div {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.critique-body .time_created {
+    text-align: right;
 }

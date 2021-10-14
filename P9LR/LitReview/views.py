@@ -53,12 +53,16 @@ def logout(request):
 
 
 def flux(request):
+    if not request.user.is_authenticated:
+        return redirect('login_page')
     list_reviews = Ticket.objects.all()
     context = {'list_reviews': list_reviews}
     return render(request, 'LitReview/flux.html', context)
 
 
 def create_ticket(request):
+    if not request.user.is_authenticated:
+        return redirect('login_page')
     form = TicketForm()
     if request.method == "POST":
         form = TicketForm(request.POST, request.FILES)
@@ -69,3 +73,50 @@ def create_ticket(request):
             return redirect('flux')
     context = {'form': form}
     return render(request, 'LitReview/create_ticket.html', context)
+
+
+def create_response(request):
+    if not request.user.is_authenticated:
+        return redirect('login_page')
+    context = {}
+    return render(request, 'LitReview/create_response.html', context)
+
+
+def create_review(request):
+    if not request.user.is_authenticated:
+        return redirect('login_page')
+    context = {}
+    return render(request, 'LitReview/create_review.html', context)
+
+
+def subscriptions(request):
+    if not request.user.is_authenticated:
+        return redirect('login_page')
+    context = {}
+    return render(request, 'LitReview/subscriptions.html', context)
+
+
+def posts(request):
+    if not request.user.is_authenticated:
+        return redirect('login_page')
+    list_reviews = Ticket.objects.all()
+    filtered_list = []
+    for post in list_reviews:
+        if post.user == request.user:
+            filtered_list.append(post)
+    context = {'list_reviews': filtered_list}
+    return render(request, 'LitReview/posts.html', context)
+
+
+def edit_ticket(request):
+    if not request.user.is_authenticated:
+        return redirect('login_page')
+    context = {}
+    return render(request, 'LitReview/edit_ticket.html', context)
+
+
+def edit_review(request):
+    if not request.user.is_authenticated:
+        return redirect('login_page')
+    context = {}
+    return render(request, 'LitReview/edit_review.html', context)
