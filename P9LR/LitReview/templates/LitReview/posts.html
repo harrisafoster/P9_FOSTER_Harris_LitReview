@@ -15,7 +15,7 @@
                       <img src="{{review.image.url}}">
                       <div>
                         <a href="{% url 'edit_ticket' review.pk %}" class="button">Edit</a>
-                        <a href="#" class="button">Delete</a>
+                        <a href="{% url 'delete_ticket' review.pk %}" class="button">Delete</a>
                       </div>
                   </div>
                 {% endfor %}

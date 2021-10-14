@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import TicketForm, ReviewForm
 from .models import Ticket, Review
-from django.views.generic import ListView, UpdateView
+from django.views.generic import ListView, UpdateView, DeleteView
 import operator
 from django.urls import reverse
 
@@ -77,6 +77,15 @@ class UpdatePostView(UpdateView):
 
     def get_success_url(self):
         return reverse('posts')
+
+
+class DeletePostView(DeleteView):
+    model = Ticket
+    template_name = 'LitReview/delete_ticket.html'
+
+    def get_success_url(self):
+        return reverse('posts')
+
 
 
 def edit_review(request):

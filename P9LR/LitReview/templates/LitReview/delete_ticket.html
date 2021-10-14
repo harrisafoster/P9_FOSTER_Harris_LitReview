@@ -1,0 +1,19 @@
+{% extends 'LitReview/main.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h2>Delete: {{ object.title }}</h2>
+        <br/>
+      <form method="post">
+          {% csrf_token %}
+          <strong>Are your sure?</strong>
+          <br/>
+          <br/>
+          <button class="btn btn-secondary">Delete</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

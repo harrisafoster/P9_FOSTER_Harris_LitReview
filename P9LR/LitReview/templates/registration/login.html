@@ -4,16 +4,19 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <p>Inscrivez-vous maintenant</p>
+                <p>Sign up now</p>
                 <a href="{% url 'signup' %}" class="button">S'inscrire</a>
             </div>
             <div class="col">
-                <p>Connectez-vous</p>
+                <p>Log in</p>
                 <form method="post">
                     {% csrf_token %}
-                    <input type="text" value="Nom d'utilisateur" id="username" name="username" required size="40">
-                    <p><input type="text" value="Mot de passe" id="password" name="password" size="40" required></p>
-                    <button type="submit" class="button">Se connecter</button>
+                    <p>Username:</p>
+                    <input type="text" id="username" name="username" required size="40">
+                    <br/>
+                    <p>Password</p>
+                    <p><input type="password" id="password" name="password" size="40" required></p>
+                    <button type="submit" class="button">Log in</button>
                     <!--balise message to show error messages-->
                 </form>
             </div>

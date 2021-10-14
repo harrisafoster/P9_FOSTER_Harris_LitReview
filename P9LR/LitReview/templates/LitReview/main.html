@@ -20,10 +20,10 @@
             {% if user.is_authenticated %}
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav ms-auto">
-                    <a class="nav-link active" aria-current="page" href="{% url 'flux' %}">Flux</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'flux' %}">Feed</a>
                     <a class="nav-link" href="{% url 'posts' %}">Posts</a>
-                    <a class="nav-link" href="{% url 'subscriptions' %}">Abonnements</a>
-                    <a class="nav-link" href="{% url 'logout' %}">Se déconnecter</a>
+                    <a class="nav-link" href="{% url 'subscriptions' %}">Subscriptions</a>
+                    <a class="nav-link" href="{% url 'logout' %}">Log out</a>
                 </div>
             </div>
             {% endif %}
