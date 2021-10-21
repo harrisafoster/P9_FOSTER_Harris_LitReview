@@ -55,10 +55,20 @@ def logout(request):
 
 class PostListView(ListView):
     # example includes a view based on functions to combine models
-    model = Ticket
     template_name = 'LitReview/flux.html'
     context_object_name = 'list_reviews'
-    ordering = ['-time_created']
+
+    def get_queryset(self):
+        return Ticket.objects.order_by('-time_created')
+
+    def get_context_data(self, **kwargs):
+        context = super(PostListView, self).get_context_data(**kwargs)
+        context['responses'] = Review.objects.order_by('-time_created')
+        pks = []
+        for obj in Review.objects.all():
+            pks.append(obj.ticket.pk)
+        context['pks'] = pks
+        return context
 
 
 class PersonalPostListView(ListView):

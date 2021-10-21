@@ -30,7 +30,7 @@ h1 {
 }
 
 .critique-body img {
-    width: 50%;
+    width: 40%;
     height: auto;
 }
 
@@ -62,3 +62,16 @@ h1 {
 .right {
     flex: 1;
 }
+
+.response-container {
+    position: relative;
+    border: 1px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    width: 50%;
+    height: 70%;
+    text-align: left;
+    overflow-y: scroll;
+}
+
