@@ -16,7 +16,7 @@
                     <p>{{review.description}}</p>
                     <img src="{{review.image.url}}">
                     <div>
-                        <a href="{% url 'create_response' %}" class="button">Create a review</a>
+                        <a href="{% url 'create_response' review.pk %}" class="button">Create a review</a>
                     </div>
                 </div>
                 {% endfor %}

@@ -5,12 +5,23 @@
   <div class="row">
     <div class="col">
       <h2>Create a review (response)</h2>
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{form.media}}
-        {{form.as_p}}
-        <input type="submit">
-      </form>
+      <div class="parent">
+        <div class="left">
+          <p>{{ticket.user}}</p>
+          <p>{{ticket.time_created}}</p>
+          <p>{{ticket.title}}</p>
+          <p>{{ticket.description}}</p>
+          <img src="{{ticket.image.url}}">
+        </div>
+        <div class="right">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.media}}
+            {{form.as_p}}
+            <input type="submit">
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </div>

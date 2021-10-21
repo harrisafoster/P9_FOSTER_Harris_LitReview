@@ -54,6 +54,7 @@ def logout(request):
 
 
 class PostListView(ListView):
+    # example includes a view based on functions to combine models
     model = Ticket
     template_name = 'LitReview/flux.html'
     context_object_name = 'list_reviews'
@@ -87,7 +88,6 @@ class DeletePostView(DeleteView):
         return reverse('posts')
 
 
-
 def edit_review(request):
     if not request.user.is_authenticated:
         return redirect('login_page')
@@ -110,15 +110,21 @@ def create_ticket(request):
     return render(request, 'LitReview/create_ticket.html', context)
 
 
-def create_response(request):
+def create_response(request, pk):
+    # form that contains both models or inherits one model into another, not necessary to use the models to create the forms
     if not request.user.is_authenticated:
         return redirect('login_page')
+    ticket = Ticket.objects.get(pk=pk)
     form = ReviewForm()
     if request.method == "POST":
-        form = ReviewForm(request.POST, request.FILES)
+        form = ReviewForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
-    context = {'form': form}
+            review = form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
+            review.save()
+            return redirect('flux')
+    context = {'form': form, 'ticket': ticket}
     return render(request, 'LitReview/create_response.html', context)
 
 
