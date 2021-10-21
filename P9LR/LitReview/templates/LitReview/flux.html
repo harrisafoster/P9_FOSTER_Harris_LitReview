@@ -10,7 +10,11 @@
             <div class="critique">
                 {% for review in list_reviews %}
                 <div class="critique-body">
-                    <p>{{review.user.username}} has asked for a review</p>
+                    {% if review.user.username == user.username %}
+                        <p>You have requested a review</p>
+                    {% else %}
+                        <p>{{review.user.username}} has requested a review</p>
+                    {% endif %}
                     <p class="time_created">{{review.time_created}}</p>
                     <p>{{review.title}}</p>
                     <p>{{review.description}}</p>
@@ -18,7 +22,11 @@
                     {% for response in responses %}
                         {% if response.ticket.pk is review.pk %}
                             <div class="response-container">
-                                <p>{{response.user.username}} has posted a review</p>
+                                {% if response.user.username == user.username %}
+                                    <p>You have posted a review</p>
+                                {% else %}
+                                    <p>{{response.user.username}} has posted a review</p>
+                                {% endif %}
                                 <p class="time_created">{{response.time_created}}</p>
                                 {% if response.rating is 5 %}
                                     <p>&#9733 &#9733 &#9733 &#9733 &#9733</p>
@@ -40,9 +48,11 @@
                             </div>
                         {% endif %}
                         {% if review.pk not in pks %}
-                            <div>
-                                <a href="{% url 'create_response' review.pk %}" class="button">Create a review</a>
-                            </div>
+                            {% if review.user.username != user.username %}
+                                <div>
+                                    <a href="{% url 'create_response' review.pk %}" class="button">Create a review</a>
+                                </div>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </div>

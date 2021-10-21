@@ -29,8 +29,12 @@
             {% endif %}
         </div>
     </nav>
-
     <hr>
+    {% if user.is_authenticated %}
+    <div>
+        <p class="logged-in">Logged in as {{user.username}}</p>
+    </div>
+    {% endif %}
     {% block content %}
     {% endblock %}
     <hr>

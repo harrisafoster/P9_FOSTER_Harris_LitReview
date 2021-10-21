@@ -72,13 +72,24 @@ class PostListView(ListView):
 
 
 class PersonalPostListView(ListView):
-    model = Ticket
     template_name = 'LitReview/posts.html'
     context_object_name = 'list_reviews'
 
     def get_queryset(self):
-        personal_posts = Ticket.objects.filter(user=self.request.user)
+        personal_reviews = Review.objects.filter(user=self.request.user)
+        reviewed_posts = []
+        for review in personal_reviews:
+            reviewed_posts.append(review.ticket)
+        personal_posts = list(Ticket.objects.filter(user=self.request.user))
+        for post in reviewed_posts:
+            if post not in personal_posts:
+                personal_posts.append(post)
         return sorted(personal_posts, key=operator.attrgetter('time_created'), reverse=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(PersonalPostListView, self).get_context_data(**kwargs)
+        context['responses'] = Review.objects.order_by('-time_created')
+        return context
 
 
 class UpdatePostView(UpdateView):
@@ -96,6 +107,13 @@ class DeletePostView(DeleteView):
 
     def get_success_url(self):
         return reverse('posts')
+
+
+def delete_review(request):
+    if not request.user.is_authenticated:
+        return redirect('login_page')
+    context = {}
+    return render(request, 'LitReview/delete_review.html', context)
 
 
 def edit_review(request):
@@ -121,7 +139,6 @@ def create_ticket(request):
 
 
 def create_response(request, pk):
-    # form that contains both models or inherits one model into another, not necessary to use the models to create the forms
     if not request.user.is_authenticated:
         return redirect('login_page')
     ticket = Ticket.objects.get(pk=pk)
@@ -141,7 +158,25 @@ def create_response(request, pk):
 def create_review(request):
     if not request.user.is_authenticated:
         return redirect('login_page')
-    context = {}
+    form1 = TicketForm()
+    form2 = ReviewForm()
+    if request.method == "POST":
+        form1 = TicketForm(request.POST, request.FILES)
+        form2 = ReviewForm(request.POST)
+        if form1.is_valid():
+            ticket = form1.save(commit=False)
+            ticket.user = request.user
+            ticket.save()
+        ref_list = []
+        for obj in Ticket.objects.all():
+            ref_list.append(obj.pk)
+        if form2.is_valid():
+            review = form2.save(commit=False)
+            review.user = request.user
+            review.ticket = Ticket.objects.get(pk=ref_list[-1])
+            review.save()
+            return redirect('flux')
+    context = {'form1': form1, 'form2': form2}
     return render(request, 'LitReview/create_review.html', context)
 
 

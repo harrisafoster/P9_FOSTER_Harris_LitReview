@@ -7,17 +7,50 @@
         <div class="col">
             <div class="critique">
                 {% for review in list_reviews %}
-                  <div class="critique-body">
-                      <p>{{review.user.username}} has asked for a review</p>
-                      <p class="time_created">{{review.time_created}}</p>
-                      <p>{{review.title}}</p>
-                      <p>{{review.description}}</p>
-                      <img src="{{review.image.url}}">
+                    <div class="critique-body">
+                          {% if review.user.username == user.username %}
+                                <p>You have requested a review</p>
+                          {% else %}
+                                <p>{{review.user.username}} has requested a review</p>
+                          {% endif %}
+                          <p class="time_created">{{review.time_created}}</p>
+                          <p>{{review.title}}</p>
+                          <p>{{review.description}}</p>
+                          <img src="{{review.image.url}}">
+                          {% for response in responses %}
+                                {% if response.ticket.pk is review.pk %}
+                                    <div class="response-container">
+                                        {% if response.user.username == user.username %}
+                                            <p>You have posted a review</p>
+                                        {% else %}
+                                            <p>{{response.user.username}} has posted a review</p>
+                                        {% endif %}
+                                        <p class="time_created">{{response.time_created}}</p>
+                                        {% if response.rating is 5 %}
+                                            <p>&#9733 &#9733 &#9733 &#9733 &#9733</p>
+                                        {% endif %}
+                                        {% if response.rating is 4 %}
+                                            <p>&#9733 &#9733 &#9733 &#9733</p>
+                                        {% endif %}
+                                        {% if response.rating is 3 %}
+                                            <p>&#9733 &#9733 &#9733</p>
+                                        {% endif %}
+                                        {% if response.rating is 2 %}
+                                            <p>&#9733 &#9733</p>
+                                        {% endif %}
+                                        {% if response.rating is 1 %}
+                                            <p>&#9733</p>
+                                        {% endif %}
+                                        <p>{{response.headline}}</p>
+                                        <p class="response-text">{{response.body}}</p>
+                                    </div>
+                                {% endif %}
+                          {% endfor %}
                       <div>
-                        <a href="{% url 'edit_ticket' review.pk %}" class="button">Edit</a>
-                        <a href="{% url 'delete_ticket' review.pk %}" class="button">Delete</a>
+                          <a href="{% url 'edit_ticket' review.pk %}" class="button">Edit</a>
+                          <a href="{% url 'delete_ticket' review.pk %}" class="button">Delete</a>
                       </div>
-                  </div>
+                    </div>
                 {% endfor %}
             </div>
         </div>
