@@ -3,12 +3,13 @@ from django.contrib.auth import logout as django_logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import TicketForm, ReviewForm
-from .models import Ticket, Review
+from .forms import TicketForm, ReviewForm, FollowUserForm
+from .models import Ticket, Review, UserFollows
 from django.views.generic import ListView
 import operator
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
 
 
 def login_page(request):
@@ -254,5 +255,37 @@ def create_review(request):
 
 @login_required(redirect_field_name='login_page')
 def subscriptions(request):
-    context = {}
+    form = FollowUserForm()
+    if request.method == 'POST':
+        form = FollowUserForm(request.POST)
+        if form.is_valid():
+            user_follow = UserFollows()
+            user_follow.user = request.user
+            username_followed = form.cleaned_data.get('user_to_follow')
+            user_follow.followed_user = User.objects.get(username=username_followed)
+            user_follow.save()
+            redirect('subscriptions')
+
+    following = []
+    for obj in UserFollows.objects.all():
+        if obj.user == request.user:
+            following.append(obj.followed_user)
+
+    followed_by = []
+    for obj in UserFollows.objects.all():
+        print(obj)
+        if obj.followed_user == request.user:
+            followed_by.append(obj.user)
+    context = {'form': form, 'following': following, 'followed_by': followed_by}
     return render(request, 'LitReview/subscriptions.html', context)
+
+
+@login_required(redirect_field_name='login_page')
+def delete_subscription(request, pk):
+    user_followed = User.objects.get(id=pk)
+    relationship = UserFollows.objects.get(user=request.user, followed_user=user_followed)
+    if request.method == 'POST':
+        relationship.delete()
+        return redirect('subscriptions')
+    context = {'subscription': relationship}
+    return render(request, 'LitReview/delete_subscription.html', context)
