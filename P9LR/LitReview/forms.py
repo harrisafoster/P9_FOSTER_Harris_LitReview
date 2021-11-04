@@ -17,12 +17,13 @@ class ReviewForm(ModelForm):
 
 
 def is_in_database(name):
-    usernames = []
-    for obj in User.objects.all():
-        usernames.append(obj.username)
-    if name not in usernames:
+    if not User.objects.filter(username=name).exists():
         raise ValidationError("User not in database")
 
 
 class FollowUserForm(Form):
     user_to_follow = CharField(max_length=25, validators=[is_in_database])
+
+    def clean(self):
+        clean_data = super().clean()
+

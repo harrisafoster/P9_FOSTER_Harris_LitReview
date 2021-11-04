@@ -2,7 +2,6 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout as django_logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from .forms import TicketForm, ReviewForm, FollowUserForm
 from .models import Ticket, Review, UserFollows
 from django.views.generic import ListView
@@ -10,6 +9,7 @@ import operator
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
+from django.contrib import messages
 
 
 def login_page(request):
@@ -56,6 +56,7 @@ def logout(request):
 
 
 class PostListView(ListView):
+    #fix order to put recent reviews on top as well
     template_name = 'LitReview/flux.html'
     context_object_name = 'list_tickets'
 
@@ -231,6 +232,7 @@ def create_response(request, pk):
 
 @login_required(redirect_field_name='login_page')
 def create_review(request):
+    # custom form to include all fields, use models after to create objects
     form1 = TicketForm()
     form2 = ReviewForm()
     if request.method == "POST":
@@ -263,8 +265,12 @@ def subscriptions(request):
             user_follow.user = request.user
             username_followed = form.cleaned_data.get('user_to_follow')
             user_follow.followed_user = User.objects.get(username=username_followed)
-            user_follow.save()
-            redirect('subscriptions')
+            if request.user == user_follow.followed_user:
+                messages.info(request, 'You cannot subscribe to yourself.')
+                return redirect('subscriptions')
+            else:
+                user_follow.save()
+                return redirect('subscriptions')
 
     following = []
     for obj in UserFollows.objects.all():
@@ -273,7 +279,6 @@ def subscriptions(request):
 
     followed_by = []
     for obj in UserFollows.objects.all():
-        print(obj)
         if obj.followed_user == request.user:
             followed_by.append(obj.user)
     context = {'form': form, 'following': following, 'followed_by': followed_by}
