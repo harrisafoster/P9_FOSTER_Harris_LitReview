@@ -1,13 +1,12 @@
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout as django_logout
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import TicketForm, ReviewForm
 from .models import Ticket, Review
 from django.views.generic import ListView
 import operator
-from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -164,30 +163,39 @@ def edit_review_and_ticket(request, review_pk, ticket_pk):
 
 @login_required(redirect_field_name='login_page')
 def delete(request, pk):
-    #all error handling and redirection to editing pages should be done here. Figure out of functions work better than classes.
     ticket = Ticket.objects.get(pk=pk)
     try:
         review = Review.objects.get(ticket=ticket)
-    except:
-        pass
+    except ObjectDoesNotExist:
+        review_pk = 0
+    else:
+        review_pk = review.pk
+
+    if ticket.user == request.user:
+        return delete_ticket(request, ticket_pk=ticket.pk)
+    else:
+        return delete_review(request, review_pk=review_pk, ticket_pk=ticket.pk)
 
 
 @login_required(redirect_field_name='login_page')
-def delete_review(request):
-    context = {}
+def delete_review(request, review_pk, ticket_pk):
+    ticket = Ticket.objects.get(pk=ticket_pk)
+    review = Review.objects.get(pk=review_pk)
+    if request.method == 'POST':
+        review.delete()
+        return redirect('my_posts')
+    context = {'review': review, 'ticket': ticket}
     return render(request, 'LitReview/delete_review.html', context)
 
 
 @login_required(redirect_field_name='login_page')
-def delete_ticket(request):
-    context = {}
+def delete_ticket(request, ticket_pk):
+    ticket = Ticket.objects.get(pk=ticket_pk)
+    if request.method == 'POST':
+        ticket.delete()
+        return redirect('my_posts')
+    context = {'ticket': ticket}
     return render(request, 'LitReview/delete_ticket.html', context)
-
-
-@login_required(redirect_field_name='login_page')
-def delete_review_and_ticket(request):
-    context = {}
-    return render(request, 'LitReview/delete_review_and_ticket.html', context)
 
 
 @login_required(redirect_field_name='login_page')
