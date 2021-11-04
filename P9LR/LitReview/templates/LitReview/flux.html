@@ -8,49 +8,49 @@
             <a href="{% url 'create_ticket' %}" class="button">Ask for a review</a>
             <a href="{% url 'create_review' %}" class="button">Create a review</a>
             <div class="critique">
-                {% for review in list_reviews %}
+                {% for ticket in list_tickets %}
                 <div class="critique-body">
-                    {% if review.user.username == user.username %}
+                    {% if ticket.user.username == user.username %}
                         <p>You have requested a review</p>
                     {% else %}
-                        <p>{{review.user.username}} has requested a review</p>
+                        <p>{{ticket.user.username}} has requested a review</p>
                     {% endif %}
-                    <p class="time_created">{{review.time_created}}</p>
-                    <p>{{review.title}}</p>
-                    <p>{{review.description}}</p>
-                    <img src="{{review.image.url}}">
-                    {% for response in responses %}
-                        {% if response.ticket.pk is review.pk %}
+                    <p class="time_created">{{ticket.time_created}}</p>
+                    <p>{{ticket.title}}</p>
+                    <p>{{ticket.description}}</p>
+                    <img src="{{ticket.image.url}}">
+                    {% for review in reviews %}
+                        {% if review.ticket.pk is ticket.pk %}
                             <div class="response-container">
-                                {% if response.user.username == user.username %}
+                                {% if review.user.username == user.username %}
                                     <p>You have posted a review</p>
                                 {% else %}
-                                    <p>{{response.user.username}} has posted a review</p>
+                                    <p>{{review.user.username}} has posted a review</p>
                                 {% endif %}
-                                <p class="time_created">{{response.time_created}}</p>
-                                {% if response.rating is 5 %}
+                                <p class="time_created">{{review.time_created}}</p>
+                                {% if review.rating is 5 %}
                                     <p>&#9733 &#9733 &#9733 &#9733 &#9733</p>
                                 {% endif %}
-                                {% if response.rating is 4 %}
+                                {% if review.rating is 4 %}
                                     <p>&#9733 &#9733 &#9733 &#9733</p>
                                 {% endif %}
-                                {% if response.rating is 3 %}
+                                {% if review.rating is 3 %}
                                     <p>&#9733 &#9733 &#9733</p>
                                 {% endif %}
-                                {% if response.rating is 2 %}
+                                {% if review.rating is 2 %}
                                     <p>&#9733 &#9733</p>
                                 {% endif %}
-                                {% if response.rating is 1 %}
+                                {% if review.rating is 1 %}
                                     <p>&#9733</p>
                                 {% endif %}
-                                <p>{{response.headline}}</p>
-                                <p class="response-text">{{response.body}}</p>
+                                <p>{{review.headline}}</p>
+                                <p class="response-text">{{review.body}}</p>
                             </div>
                         {% endif %}
-                        {% if review.pk not in pks %}
-                            {% if review.user.username != user.username %}
+                        {% if ticket.pk not in pks %}
+                            {% if ticket.user.username != user.username %}
                                 <div>
-                                    <a href="{% url 'create_response' review.pk %}" class="button">Create a review</a>
+                                    <a href="{% url 'create_response' ticket.pk %}" class="button">Create a review</a>
                                 </div>
                             {% endif %}
                         {% endif %}

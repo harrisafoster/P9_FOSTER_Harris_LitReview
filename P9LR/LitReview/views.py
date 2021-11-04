@@ -1,13 +1,15 @@
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout as django_logout
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import TicketForm, ReviewForm
 from .models import Ticket, Review
-from django.views.generic import ListView, UpdateView, DeleteView
+from django.views.generic import ListView
 import operator
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def login_page(request):
@@ -54,16 +56,15 @@ def logout(request):
 
 
 class PostListView(ListView):
-    # example includes a view based on functions to combine models
     template_name = 'LitReview/flux.html'
-    context_object_name = 'list_reviews'
+    context_object_name = 'list_tickets'
 
     def get_queryset(self):
         return Ticket.objects.order_by('-time_created')
 
     def get_context_data(self, **kwargs):
         context = super(PostListView, self).get_context_data(**kwargs)
-        context['responses'] = Review.objects.order_by('-time_created')
+        context['reviews'] = Review.objects.order_by('-time_created')
         pks = []
         for obj in Review.objects.all():
             pks.append(obj.ticket.pk)
@@ -72,60 +73,125 @@ class PostListView(ListView):
 
 
 class PersonalPostListView(ListView):
-    template_name = 'LitReview/posts.html'
-    context_object_name = 'list_reviews'
+    template_name = 'LitReview/my_posts.html'
+    context_object_name = 'list_tickets'
 
     def get_queryset(self):
         personal_reviews = Review.objects.filter(user=self.request.user)
         reviewed_posts = []
         for review in personal_reviews:
             reviewed_posts.append(review.ticket)
-        personal_posts = list(Ticket.objects.filter(user=self.request.user))
+        personal_tickets = list(Ticket.objects.filter(user=self.request.user))
         for post in reviewed_posts:
-            if post not in personal_posts:
-                personal_posts.append(post)
-        return sorted(personal_posts, key=operator.attrgetter('time_created'), reverse=True)
+            if post not in personal_tickets:
+                personal_tickets.append(post)
+        return sorted(personal_tickets, key=operator.attrgetter('time_created'), reverse=True)
 
     def get_context_data(self, **kwargs):
         context = super(PersonalPostListView, self).get_context_data(**kwargs)
-        context['responses'] = Review.objects.order_by('-time_created')
+        context['reviews'] = Review.objects.order_by('-time_created')
         return context
 
 
-class UpdatePostView(UpdateView):
-    model = Ticket
-    template_name = 'LitReview/edit_ticket.html'
-    fields = ['title', 'description', 'image']
+@login_required(redirect_field_name='login_page')
+def edit(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    try:
+        review = Review.objects.get(ticket=ticket)
+    except ObjectDoesNotExist:
+        review_pk = 0
+    else:
+        review_pk = review.pk
 
-    def get_success_url(self):
-        return reverse('posts')
+    if review_pk != 0:
+        review = Review.objects.get(ticket=ticket)
+        if review.user == request.user and ticket.user == request.user:
+            return edit_review_and_ticket(request, review_pk=review_pk, ticket_pk=ticket.pk)
+    if ticket.user == request.user:
+        return edit_ticket(request, pk=ticket.pk)
+    else:
+        return edit_review(request, review_pk=review_pk, ticket_pk=ticket.pk)
 
 
-class DeletePostView(DeleteView):
-    model = Ticket
-    template_name = 'LitReview/delete_ticket.html'
+@login_required(redirect_field_name='login_page')
+def edit_ticket(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    form = TicketForm(instance=ticket)
+    if request.method == "POST":
+        form = TicketForm(request.POST, request.FILES, instance=ticket)
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.save()
+            return redirect('my_posts')
+    context = {'form': form}
+    return render(request, 'LitReview/edit_ticket.html', context)
 
-    def get_success_url(self):
-        return reverse('posts')
+
+@login_required(redirect_field_name='login_page')
+def edit_review(request, review_pk, ticket_pk):
+    ticket = Ticket.objects.get(pk=ticket_pk)
+    review = Review.objects.get(pk=review_pk)
+    form = ReviewForm(instance=review)
+    if request.method == "POST":
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.save()
+            return redirect('my_posts')
+    context = {'form': form, 'ticket': ticket}
+    return render(request, 'LitReview/edit_review.html', context)
 
 
+@login_required(redirect_field_name='login_page')
+def edit_review_and_ticket(request, review_pk, ticket_pk):
+    ticket = Ticket.objects.get(pk=ticket_pk)
+    review = Review.objects.get(pk=review_pk)
+    form1 = TicketForm(instance=ticket)
+    form2 = ReviewForm(instance=review)
+    if request.method == "POST":
+        form1 = TicketForm(request.POST, request.FILES, instance=ticket)
+        if form1.is_valid():
+            ticket = form1.save(commit=False)
+            ticket.save()
+        form2 = ReviewForm(request.POST, instance=review)
+        if form2.is_valid():
+            review = form2.save(commit=False)
+            review.save()
+            return redirect('my_posts')
+    context = {'form1': form1, 'form2': form2}
+    return render(request, 'LitReview/edit_review_and_ticket.html', context)
+
+
+@login_required(redirect_field_name='login_page')
+def delete(request, pk):
+    #all error handling and redirection to editing pages should be done here. Figure out of functions work better than classes.
+    ticket = Ticket.objects.get(pk=pk)
+    try:
+        review = Review.objects.get(ticket=ticket)
+    except:
+        pass
+
+
+@login_required(redirect_field_name='login_page')
 def delete_review(request):
-    if not request.user.is_authenticated:
-        return redirect('login_page')
     context = {}
     return render(request, 'LitReview/delete_review.html', context)
 
 
-def edit_review(request):
-    if not request.user.is_authenticated:
-        return redirect('login_page')
+@login_required(redirect_field_name='login_page')
+def delete_ticket(request):
     context = {}
-    return render(request, 'LitReview/edit_review.html', context)
+    return render(request, 'LitReview/delete_ticket.html', context)
 
 
+@login_required(redirect_field_name='login_page')
+def delete_review_and_ticket(request):
+    context = {}
+    return render(request, 'LitReview/delete_review_and_ticket.html', context)
+
+
+@login_required(redirect_field_name='login_page')
 def create_ticket(request):
-    if not request.user.is_authenticated:
-        return redirect('login_page')
     form = TicketForm()
     if request.method == "POST":
         form = TicketForm(request.POST, request.FILES)
@@ -138,9 +204,8 @@ def create_ticket(request):
     return render(request, 'LitReview/create_ticket.html', context)
 
 
+@login_required(redirect_field_name='login_page')
 def create_response(request, pk):
-    if not request.user.is_authenticated:
-        return redirect('login_page')
     ticket = Ticket.objects.get(pk=pk)
     form = ReviewForm()
     if request.method == "POST":
@@ -155,9 +220,8 @@ def create_response(request, pk):
     return render(request, 'LitReview/create_response.html', context)
 
 
+@login_required(redirect_field_name='login_page')
 def create_review(request):
-    if not request.user.is_authenticated:
-        return redirect('login_page')
     form1 = TicketForm()
     form2 = ReviewForm()
     if request.method == "POST":
@@ -180,8 +244,7 @@ def create_review(request):
     return render(request, 'LitReview/create_review.html', context)
 
 
+@login_required(redirect_field_name='login_page')
 def subscriptions(request):
-    if not request.user.is_authenticated:
-        return redirect('login_page')
     context = {}
     return render(request, 'LitReview/subscriptions.html', context)

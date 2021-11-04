@@ -1,0 +1,60 @@
+{% extends 'LitReview/main.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="critique">
+                {% for ticket in list_tickets %}
+                    <div class="critique-body">
+                          {% if ticket.user.username == user.username %}
+                                <p>You have requested a review</p>
+                          {% else %}
+                                <p>{{ticket.user.username}} has requested a review</p>
+                          {% endif %}
+                          <p class="time_created">{{ticket.time_created}}</p>
+                          <p>{{ticket.title}}</p>
+                          <p>{{ticket.description}}</p>
+                          <img src="{{ticket.image.url}}">
+                          {% for review in reviews %}
+                                {% if review.ticket.pk is ticket.pk %}
+                                    <div class="response-container">
+                                        {% if review.user.username == user.username %}
+                                            <p>You have posted a review</p>
+                                        {% else %}
+                                            <p>{{review.user.username}} has posted a review</p>
+                                        {% endif %}
+                                        <p class="time_created">{{review.time_created}}</p>
+                                        {% if review.rating is 5 %}
+                                            <p>&#9733 &#9733 &#9733 &#9733 &#9733</p>
+                                        {% endif %}
+                                        {% if review.rating is 4 %}
+                                            <p>&#9733 &#9733 &#9733 &#9733</p>
+                                        {% endif %}
+                                        {% if review.rating is 3 %}
+                                            <p>&#9733 &#9733 &#9733</p>
+                                        {% endif %}
+                                        {% if review.rating is 2 %}
+                                            <p>&#9733 &#9733</p>
+                                        {% endif %}
+                                        {% if review.rating is 1 %}
+                                            <p>&#9733</p>
+                                        {% endif %}
+                                        <p>{{review.headline}}</p>
+                                        <p class="response-text">{{review.body}}</p>
+                                    </div>
+                                {% endif %}
+                          {% endfor %}
+                      <div>
+                          <a href="{% url 'edit' ticket.pk %}" class="button">Edit</a>
+                          <a href="{% url 'delete' ticket.pk %}" class="button">Delete</a>
+                      </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
