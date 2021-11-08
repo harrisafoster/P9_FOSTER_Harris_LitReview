@@ -33,6 +33,13 @@ h1 {
     text-align: left;
 }
 
+.description{
+    width: 40%;
+    height: 40%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 .critique-body img {
     width: 40%;
     height: auto;
@@ -75,7 +82,11 @@ h1 {
     width: 50%;
     height: 70%;
     text-align: left;
-    overflow-y: scroll;
+    overflow-y: auto;
+}
+
+#id_rating li {
+    display: inline-block;
 }
 
 

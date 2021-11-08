@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.contrib import messages
+import os
 
 
 def login_page(request):
@@ -65,7 +66,7 @@ class PostListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PostListView, self).get_context_data(**kwargs)
-        context['reviews'] = Review.objects.order_by('-time_created')
+        context['reviews'] = Review.objects.order_by('time_created')
         pks = []
         for obj in Review.objects.all():
             pks.append(obj.ticket.pk)
@@ -195,6 +196,9 @@ def delete_ticket(request, ticket_pk):
     ticket = Ticket.objects.get(pk=ticket_pk)
     if request.method == 'POST':
         ticket.delete()
+        if ticket.image:
+            if os.path.isfile(ticket.image.path):
+                os.remove(ticket.image.path)
         return redirect('my_posts')
     context = {'ticket': ticket}
     return render(request, 'LitReview/delete_ticket.html', context)
@@ -232,25 +236,21 @@ def create_response(request, pk):
 
 @login_required(redirect_field_name='login_page')
 def create_review(request):
-    # custom form to include all fields, use models after to create objects
     form1 = TicketForm()
     form2 = ReviewForm()
     if request.method == "POST":
         form1 = TicketForm(request.POST, request.FILES)
         form2 = ReviewForm(request.POST)
         if form1.is_valid():
-            ticket = form1.save(commit=False)
-            ticket.user = request.user
-            ticket.save()
-        ref_list = []
-        for obj in Ticket.objects.all():
-            ref_list.append(obj.pk)
-        if form2.is_valid():
-            review = form2.save(commit=False)
-            review.user = request.user
-            review.ticket = Ticket.objects.get(pk=ref_list[-1])
-            review.save()
-            return redirect('flux')
+            if form2.is_valid():
+                ticket = form1.save(commit=False)
+                ticket.user = request.user
+                ticket.save()
+                review = form2.save(commit=False)
+                review.user = request.user
+                review.ticket = ticket
+                review.save()
+                return redirect('flux')
     context = {'form1': form1, 'form2': form2}
     return render(request, 'LitReview/create_review.html', context)
 

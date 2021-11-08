@@ -2,6 +2,7 @@ from django.db import models
 from django.forms import ModelForm, Form, CharField, ValidationError
 from .models import Ticket, Review
 from django.contrib.auth.models import User
+from django import forms
 
 
 class TicketForm(ModelForm):
@@ -14,6 +15,10 @@ class ReviewForm(ModelForm):
     class Meta:
         model = Review
         fields = ['rating', 'headline', 'body']
+        choices = [('1', 1), ('2', 2), ('3', 3), ('4', 4), ('5', 5)]
+        widgets = {
+            'rating': forms.RadioSelect(choices=choices)
+        }
 
 
 def is_in_database(name):
@@ -26,4 +31,5 @@ class FollowUserForm(Form):
 
     def clean(self):
         clean_data = super().clean()
+        return clean_data
 

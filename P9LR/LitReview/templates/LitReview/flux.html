@@ -17,7 +17,7 @@
                     {% endif %}
                     <p class="time_created">{{ticket.time_created}}</p>
                     <p>{{ticket.title}}</p>
-                    <p>{{ticket.description}}</p>
+                    <p class="description">{{ticket.description}}</p>
                     <img src="{{ticket.image.url}}">
                     {% for review in reviews %}
                         {% if review.ticket.pk is ticket.pk %}
