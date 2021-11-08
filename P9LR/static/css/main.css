@@ -1,3 +1,7 @@
+/*********
+General settings
+*********/
+
 h1 {
     text-align: center;
 }
@@ -22,6 +26,10 @@ h1 {
 .logged-in {
     text-align: right;
 }
+
+/*********
+Feed ticket/review block
+*********/
 
 .critique-body {
     position: relative;
@@ -57,6 +65,36 @@ h1 {
     text-align: right;
 }
 
+.response-container {
+    display: block;
+    position: relative;
+    border: 1px solid black;
+    margin: 0 auto 10% auto;
+    width: 50%;
+    height: 70%;
+    text-align: left;
+    overflow-y: auto;
+}
+
+#id_rating li {
+    display: inline-block;
+}
+
+/*********
+Subscriptions page adjustments
+*********/
+
+.scrip {
+    border-style: solid;
+    padding: 5px;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+/*********
+Forms adjustments
+*********/
+
 .parent {
     display:flex;
 }
@@ -73,20 +111,3 @@ h1 {
 .right {
     flex: 1;
 }
-
-.response-container {
-    display: block;
-    position: relative;
-    border: 1px solid black;
-    margin: 0 auto 10% auto;
-    width: 50%;
-    height: 70%;
-    text-align: left;
-    overflow-y: auto;
-}
-
-#id_rating li {
-    display: inline-block;
-}
-
-

@@ -1,4 +1,3 @@
-from django.db import models
 from django.forms import ModelForm, Form, CharField, ValidationError
 from .models import Ticket, Review
 from django.contrib.auth.models import User
@@ -22,6 +21,9 @@ class ReviewForm(ModelForm):
 
 
 def is_in_database(name):
+    """
+    Custom validator used to check if a user exists.
+    """
     if not User.objects.filter(username=name).exists():
         raise ValidationError("User not in database")
 

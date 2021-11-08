@@ -57,7 +57,9 @@ def logout(request):
 
 
 class PostListView(ListView):
-    #fix order to put recent reviews on top as well
+    """
+    Obtains all tickets and reviews in order to display them.
+    """
     template_name = 'LitReview/flux.html'
     context_object_name = 'list_tickets'
 
@@ -75,6 +77,9 @@ class PostListView(ListView):
 
 
 class PersonalPostListView(ListView):
+    """
+    Obtains only the posts/reviews that have been posted by the authenticated user.
+    """
     template_name = 'LitReview/my_posts.html'
     context_object_name = 'list_tickets'
 
@@ -97,6 +102,11 @@ class PersonalPostListView(ListView):
 
 @login_required(redirect_field_name='login_page')
 def edit(request, pk):
+    """
+    Determines which on the objects contained in a zone belong to the authenticated user.
+
+    Redirects to: Update page for found objects
+    """
     ticket = Ticket.objects.get(pk=pk)
     try:
         review = Review.objects.get(ticket=ticket)
@@ -166,6 +176,11 @@ def edit_review_and_ticket(request, review_pk, ticket_pk):
 
 @login_required(redirect_field_name='login_page')
 def delete(request, pk):
+    """
+    Determines which on the objects contained in a zone belong to the authenticated user.
+
+    Redirects to: Confirmation page of delete action
+    """
     ticket = Ticket.objects.get(pk=pk)
     try:
         review = Review.objects.get(ticket=ticket)
@@ -206,6 +221,11 @@ def delete_ticket(request, ticket_pk):
 
 @login_required(redirect_field_name='login_page')
 def create_ticket(request):
+    """
+    Creates only the request for review
+
+    Redirects to: Feed
+    """
     form = TicketForm()
     if request.method == "POST":
         form = TicketForm(request.POST, request.FILES)
@@ -220,6 +240,11 @@ def create_ticket(request):
 
 @login_required(redirect_field_name='login_page')
 def create_response(request, pk):
+    """
+    Creates a response to a ticket
+
+    Redirects to: Feed
+    """
     ticket = Ticket.objects.get(pk=pk)
     form = ReviewForm()
     if request.method == "POST":
@@ -236,6 +261,11 @@ def create_response(request, pk):
 
 @login_required(redirect_field_name='login_page')
 def create_review(request):
+    """
+    Creates a ticket and review simultaneously
+
+    Redirects to: Feed
+    """
     form1 = TicketForm()
     form2 = ReviewForm()
     if request.method == "POST":

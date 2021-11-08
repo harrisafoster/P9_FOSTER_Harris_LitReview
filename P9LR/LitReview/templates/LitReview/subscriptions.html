@@ -24,15 +24,19 @@
       <h5>Following:</h5>
       <div>
         {% for user in following %}
-        <p>{{ user.username }}</p>
-        <a href="{% url 'delete_subscription' user.pk %}" class="button">Delete</a>
+        <div class="scrip">
+          <p>{{ user.username }}</p>
+          <a href="{% url 'delete_subscription' user.pk %}" class="button">Delete</a>
+        </div>
         {% endfor %}
       </div>
       <hr>
       <h5>Followed by:</h5>
       <div>
         {% for user in followed_by %}
-        <p>{{ user.username }}</p>
+        <div class="scrip">
+          <p>{{ user.username }}</p>
+        </div>
         {% endfor %}
       </div>
     </div>
