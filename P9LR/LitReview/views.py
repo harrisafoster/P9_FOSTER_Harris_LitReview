@@ -162,11 +162,10 @@ def edit_review_and_ticket(request, review_pk, ticket_pk):
     form2 = ReviewForm(instance=review)
     if request.method == "POST":
         form1 = TicketForm(request.POST, request.FILES, instance=ticket)
-        if form1.is_valid():
+        form2 = ReviewForm(request.POST, instance=review)
+        if form1.is_valid() and form2.is_valid():
             ticket = form1.save(commit=False)
             ticket.save()
-        form2 = ReviewForm(request.POST, instance=review)
-        if form2.is_valid():
             review = form2.save(commit=False)
             review.save()
             return redirect('my_posts')
@@ -211,9 +210,8 @@ def delete_ticket(request, ticket_pk):
     ticket = Ticket.objects.get(pk=ticket_pk)
     if request.method == 'POST':
         ticket.delete()
-        if ticket.image:
-            if os.path.isfile(ticket.image.path):
-                os.remove(ticket.image.path)
+        if ticket.image and os.path.isfile(ticket.image.path):
+            os.remove(ticket.image.path)
         return redirect('my_posts')
     context = {'ticket': ticket}
     return render(request, 'LitReview/delete_ticket.html', context)
@@ -271,16 +269,15 @@ def create_review(request):
     if request.method == "POST":
         form1 = TicketForm(request.POST, request.FILES)
         form2 = ReviewForm(request.POST)
-        if form1.is_valid():
-            if form2.is_valid():
-                ticket = form1.save(commit=False)
-                ticket.user = request.user
-                ticket.save()
-                review = form2.save(commit=False)
-                review.user = request.user
-                review.ticket = ticket
-                review.save()
-                return redirect('flux')
+        if form1.is_valid() and form2.is_valid():
+            ticket = form1.save(commit=False)
+            ticket.user = request.user
+            ticket.save()
+            review = form2.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
+            review.save()
+            return redirect('flux')
     context = {'form1': form1, 'form2': form2}
     return render(request, 'LitReview/create_review.html', context)
 
@@ -302,15 +299,9 @@ def subscriptions(request):
                 user_follow.save()
                 return redirect('subscriptions')
 
-    following = []
-    for obj in UserFollows.objects.all():
-        if obj.user == request.user:
-            following.append(obj.followed_user)
+    following = UserFollows.objects.filter(user=request.user)
+    followed_by = UserFollows.objects.filter(followed_user=request.user)
 
-    followed_by = []
-    for obj in UserFollows.objects.all():
-        if obj.followed_user == request.user:
-            followed_by.append(obj.user)
     context = {'form': form, 'following': following, 'followed_by': followed_by}
     return render(request, 'LitReview/subscriptions.html', context)
 

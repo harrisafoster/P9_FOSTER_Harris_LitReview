@@ -10,6 +10,7 @@
             <div class="critique">
                 {% for ticket in list_tickets %}
                 <div class="critique-body">
+                    <!-- Beginning of request for critique -->
                     {% if ticket.user.username == user.username %}
                         <p>You have requested a review</p>
                     {% else %}
@@ -18,10 +19,13 @@
                     <p class="time_created">{{ticket.time_created}}</p>
                     <p>{{ticket.title}}</p>
                     <p class="description">{{ticket.description}}</p>
-                    <img src="{{ticket.image.url}}">
+                    {% if ticket.image %}
+                        <img src="{{ticket.image.url}}">
+                    {% endif %}
                     {% for review in reviews %}
                         {% if review.ticket.pk is ticket.pk %}
                             <div class="response-container">
+                                <!-- Response to request for critique -->
                                 {% if review.user.username == user.username %}
                                     <p>You have posted a review</p>
                                 {% else %}
