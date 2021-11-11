@@ -9,6 +9,20 @@ Projet 9 OpenClassrooms
 - Créer et répondre à sa propre demande de critique
 - S'abonner à d'autres utilisateurs
 - Modifier toutes les options mentionnées ci-dessus
+### Accès et inscription de l'utilisateur
+Au moment de l'accès à votre serveur personnel de LitReview vous allez voir une page d'authentification et inscription.
+Vous pouvez créer votre compte ainsi qu'accéder à votre compte depuis cette page. Une fois authentifié, vous aurez accès
+à votre flux, flux personnel, abonnements, et les modifications de toutes ces options. Vous aurez aussi accès à une
+fonctionnalité pour vous déconnecter. 
+### Conditions de connexion et tests
+Il y déjà une base de données pré-renseignée qui contient les utilisateurs suivants :
+- admin (mot de passe : password)
+- test_user1 (mot de passe : password)
+- test_user2 (mot de passe : password)
+- test_user3 (mot de passe : password)
+
+Il y a donc aussi des tickets et leurs reviews ainsi que des abonnements pour découvrir les fonctionnalités de l'application.
+
 
 ## Prérequis de base
 - Une application de type 'terminal' - GitBash, Mintty, Cygwin (si vous êtes sur Windows) 
@@ -43,26 +57,6 @@ $ cd P9LR
 $ python manage.py runserver
 Puis accédez à votre port 8000 sur votre navigateur sur http://127.0.0.1:8000/
 ```
-### Vous pouvez créer un compte admin et accéder à l'espace admin avec :
-```sh
-$ cd P9LR
-$ python manage.py createsuperuser
-$ Username: admin
-$ Email address: admin@example.com
-$ Password: **********
-$ Password (again): *********
-$ Superuser created successfully.
-
-Puis dans votre navigateur http://127.0.0.1:8000/admin/
-```
-
-## Mode d'emploi
-
-Au moment de l'accès à votre serveur personnel de LitReview vous allez voir une page d'authentification et inscription.
-Vous pouvez créer votre compte ainsi qu'accéder à votre compte depuis cette page. Une fois authentifié, vous aurez accès
-à votre flux, flux personnel, abonnements, et les modifications de toutes ces options. Vous aurez aussi accès à une
-fonctionnalité pour vous déconnecter. 
-
 
 ## Built with
 Python 3.9 

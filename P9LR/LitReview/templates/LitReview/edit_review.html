@@ -11,7 +11,9 @@
           <p>{{ticket.time_created}}</p>
           <p>{{ticket.title}}</p>
           <p>{{ticket.description}}</p>
+          {% if ticket.image %}
           <img src="{{ticket.image.url}}">
+          {% endif %}
         </div>
         <div class="right">
           <form method="post">

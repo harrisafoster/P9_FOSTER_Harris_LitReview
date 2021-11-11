@@ -32,6 +32,7 @@ Feed ticket/review block
 *********/
 
 .critique-body {
+    min-height: 300px;
     position: relative;
     border: 1px solid black;
     margin-left: auto;
@@ -110,4 +111,8 @@ Forms adjustments
 
 .right {
     flex: 1;
+}
+
+.edit-post-image img{
+    width: 30%;
 }

@@ -11,6 +11,11 @@
             {% csrf_token %}
             {{form1.media}}
             {{form1.as_p}}
+            {% if form1.instance.image %}
+            <div class="edit-post-image">
+              <img src="{{form1.instance.image.url}}">
+            </div>
+            {% endif %}
           </div>
           <div class="right">
             {{form2.media}}
