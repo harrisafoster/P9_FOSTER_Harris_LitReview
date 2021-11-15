@@ -15,7 +15,7 @@ Vous pouvez créer votre compte ainsi qu'accéder à votre compte depuis cette p
 à votre flux, flux personnel, abonnements, et les modifications de toutes ces options. Vous aurez aussi accès à une
 fonctionnalité pour vous déconnecter. 
 ### Conditions de connexion et tests
-Il y déjà une base de données pré-renseignée qui contient les utilisateurs suivants :
+Il y a déjà une base de données pré-renseignée qui contient les utilisateurs suivants :
 - admin (mot de passe : password)
 - test_user1 (mot de passe : password)
 - test_user2 (mot de passe : password)
