@@ -7,7 +7,7 @@ from .models import Ticket, Review, UserFollows
 from django.views.generic import ListView
 import operator
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User
 from django.contrib import messages
 import os
@@ -292,6 +292,13 @@ def subscriptions(request):
             user_follow.user = request.user
             username_followed = form.cleaned_data.get('user_to_follow')
             user_follow.followed_user = User.objects.get(username=username_followed)
+            try:
+                user_follow.validate_unique()
+            except ValidationError:
+                messages.info(request, 'You have already subscribed to this user.')
+                return redirect('subscriptions')
+            else:
+                pass
             if request.user == user_follow.followed_user:
                 messages.info(request, 'You cannot subscribe to yourself.')
                 return redirect('subscriptions')

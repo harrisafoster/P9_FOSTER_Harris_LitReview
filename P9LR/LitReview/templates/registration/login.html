@@ -11,10 +11,10 @@
                 <p>Log in</p>
                 <form method="post">
                     {% csrf_token %}
-                    <p>Username:</p>
+                    <p>Username: </p>
                     <input type="text" id="username" name="username" required size="40">
                     <br/>
-                    <p>Password</p>
+                    <p>Password: </p>
                     <p><input type="password" id="password" name="password" size="40" required></p>
                     <button type="submit" class="button">Log in</button>
                 </form>
