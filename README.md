@@ -1,4 +1,4 @@
-# P9_FOSTER_Harris
+# P9_FOSTER_Harris_LitReview
 LitReview
 
 Projet 9 OpenClassrooms
@@ -33,8 +33,8 @@ Il y a donc aussi des tickets et leurs reviews ainsi que des abonnements pour d�
 ### Pour les développeurs et utilisateurs (windows 10, mac, linux) :
 #### Clonez la source de LitReview localement (en utilisant votre terminal) :
 ```sh
-$ git clone https://github.com/harrisafoster/P9_FOSTER_Harris
-$ cd P9_FOSTER_Harris
+$ git clone https://github.com/harrisafoster/P9_FOSTER_Harris_LitReview
+$ cd P9_FOSTER_Harris_LitReview
 ```
 ##### Dans votre terminal dans le dossier P9_FOSTER_Harris/ : Créer et activer un environnement virtuel avec (windows 10) :
 ```sh
