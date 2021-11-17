@@ -315,8 +315,7 @@ def subscriptions(request):
 
 @login_required(redirect_field_name='login_page')
 def delete_subscription(request, pk):
-    user_followed = User.objects.get(id=pk)
-    relationship = UserFollows.objects.get(user=request.user, followed_user=user_followed)
+    relationship = UserFollows.objects.get(id=pk)
     if request.method == 'POST':
         relationship.delete()
         return redirect('subscriptions')
